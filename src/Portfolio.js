@@ -252,17 +252,6 @@ export default function Portfolio() {
     });
   });
 
-  const scrollToSection = (ref) => {
-    if (ref && ref.current) {
-      // First expand the section, then scroll
-      ref.current.scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'center',
-        inline: 'nearest'
-      });
-    }
-  };
-
   const toggleSection = (section) => {
     setExpandedSections(prev => ({
       ...prev,
