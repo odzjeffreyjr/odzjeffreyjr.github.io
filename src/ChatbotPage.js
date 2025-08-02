@@ -13,7 +13,40 @@ const ChatbotPage = ({ isOpen, onClose }) => {
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [progressMessage, setProgressMessage] = useState("");
+  const [showProgress, setShowProgress] = useState(false);
+  const [isFirstInteraction, setIsFirstInteraction] = useState(true);
   const messagesEndRef = useRef(null);
+  
+  // LLM Service configuration
+  const LLM_SERVICE_URL = process.env.REACT_APP_LLM_SERVICE_URL || "https://llm-service-313722807947.us-central1.run.app";
+  const API_KEY = process.env.REACT_APP_API_KEY;
+
+  // Validate environment variables
+  useEffect(() => {
+    if (!API_KEY) {
+      console.error('REACT_APP_API_KEY is not defined in environment variables');
+    }
+    if (!LLM_SERVICE_URL) {
+      console.error('REACT_APP_LLM_SERVICE_URL is not defined in environment variables');
+    }
+  }, [API_KEY, LLM_SERVICE_URL]);
+
+  // Progress messages for different stages
+  const initialSetupMessages = [
+    "Warming up container...",
+    "Spawning Llama model...",
+    "Loading knowledge base...",
+    "Processing your question...",
+    "Generating response..."
+  ];
+
+  const apiCallMessages = [
+    "Making API call...",
+    "Generating tokens...",
+    "Generating tokens...",
+    "Response received"
+  ];
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -23,61 +56,93 @@ const ChatbotPage = ({ isOpen, onClose }) => {
     scrollToBottom();
   }, [messages]);
 
-  // Knowledge base about Jeffrey
-  const knowledgeBase = {
-    "who are you": "I'm Jeffrey's AI assistant! I can tell you all about Jeffrey Oduman, his background, skills, and experience.",
-    "what is jeffrey studying": "Jeffrey is studying BSE Computer Science + MSE Robotics, AI Track at the University of Pennsylvania with a GPA of 3.91/4.00.",
-    "what are jeffrey's skills": "Jeffrey has expertise in Python, Java, JavaScript, C++, OCaml, SQL, HTML/CSS, React, Jetpack Compose, Pandas, Scikit-learn, Git, Docker, Firebase, WSL, Tableau, Arduino, Raspberry Pi, I2C, and UART.",
-    "what projects has jeffrey worked on": "Jeffrey has worked on several impressive projects including Quantum Trading (autonomous trading platform), Transparency Now (Android app for whistleblowers), NBA Predictor (ML model with 0.93 AUC), Wiki Olympics (Wikipedia scraping engine), and a Chess Game built from scratch in Java.",
-    "what is jeffrey's experience": "Jeffrey has experience as a Machine Learning Researcher at JoyNet Research, Software Engineer at Penn Electric Racing, Robotics Engineer at Sung Robotics Group, and Teaching Assistant for CIS 1200 at University of Pennsylvania.",
-    "where did jeffrey go to school": "Jeffrey attended African Leadership Academy for A-Levels (2022-2024) where he achieved 97% in Mathematics and 96% in Computer Science, placing in the top 5% of his class. He's now at the University of Pennsylvania (2024-2028).",
-    "what is jeffrey's gpa": "Jeffrey has an excellent GPA of 3.91/4.00 at the University of Pennsylvania.",
-    "what research areas": "Jeffrey's research areas focus on AI and Robotics, which aligns with his MSE Robotics, AI Track program.",
-    "contact jeffrey": "You can contact Jeffrey through his GitHub (github.com/odzjeffreyjr), LinkedIn (linkedin.com/in/jeffrey-oduman-533094216), or download his resume from the main page.",
-    "resume": "Jeffrey's resume is available for download on the main portfolio page. It contains detailed information about his education, experience, and projects.",
-    "github": "Jeffrey's GitHub profile is github.com/odzjeffreyjr where you can find all his projects including Quantum Trading, Transparency Now, NBA Predictor, Wiki Olympics, and Chess Game.",
-    "linkedin": "Jeffrey's LinkedIn profile is linkedin.com/in/jeffrey-oduman-533094216 where you can connect with him professionally.",
-    "quantum trading": "Quantum Trading is Jeffrey's autonomous trading platform that uses the Alpaca API with advanced algorithms for market analysis and automated decision making. It's available on GitHub.",
-    "transparency now": "Transparency Now is Jeffrey's Android app designed for whistleblowers and audit reporting. It features secure communication channels and encrypted data storage.",
-    "nba predictor": "NBA Predictor is Jeffrey's machine learning model using Logistic Regression with 0.93 AUC for predicting NBA game outcomes based on historical data.",
-    "wiki olympics": "Wiki Olympics is Jeffrey's Wikipedia scraping engine for Olympic data with comprehensive statistics and historical analysis capabilities.",
-    "chess game": "Jeffrey built a PvP Java chess game from scratch with complete rule implementation and intuitive user interface.",
-    "penn electric racing": "At Penn Electric Racing, Jeffrey worked as a Software Engineer building C++ applications and PySerial interfaces for aero & battery engineering, optimizing performance and data collection systems.",
-    "joynet research": "At JoyNet Research, Jeffrey worked as a Machine Learning Researcher developing ML algorithms and social network features using Firebase, implementing advanced recommendation systems and user behavior analysis.",
-    "sung robotics": "At Sung Robotics Group, Jeffrey worked as a Robotics Engineer implementing 3D Dubins path inverse kinematics algorithms for autonomous navigation and path planning systems.",
-    "teaching assistant": "Jeffrey is a Teaching Assistant for CIS 1200 at the University of Pennsylvania, where he leads debugging sessions for OCaml & Java, conducts recitations, and provides one-on-one student support.",
-    "african leadership academy": "Jeffrey attended African Leadership Academy (2022-2024) where he achieved excellent A-Level results: 97% in Mathematics and 96% in Computer Science, placing in the top 5% of his class."
+  // Function to cycle through progress messages
+  const showProgressMessages = () => {
+    setShowProgress(true);
+    let messageIndex = 0;
+    
+    // Choose appropriate message set based on whether this is first interaction
+    const currentMessages = isFirstInteraction ? initialSetupMessages : apiCallMessages;
+    setProgressMessage(currentMessages[messageIndex]);
+    
+    const interval = setInterval(() => {
+      messageIndex++;
+      if (messageIndex < currentMessages.length) {
+        setProgressMessage(currentMessages[messageIndex]);
+      } else {
+        // Stay at the last message, don't loop
+        clearInterval(interval);
+      }
+    }, isFirstInteraction ? 1500 : 2000); // Slower for API calls since fewer messages
+    
+    return interval;
   };
 
-  const getBotResponse = (userMessage) => {
-    const lowerMessage = userMessage.toLowerCase();
+  // Function to make API call to LLM service
+  const callLLMService = async (userMessage, previousMessages = []) => {
+    if (!API_KEY) {
+      return "Configuration error: API key is missing. Please check your environment setup.";
+    }
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
     
-    // Check for exact matches first
-    for (const [key, response] of Object.entries(knowledgeBase)) {
-      if (lowerMessage.includes(key)) {
-        return response;
+    try {
+      const response = await fetch(`${LLM_SERVICE_URL}/api/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': API_KEY
+        },
+        body: JSON.stringify({
+          message: userMessage,
+          context: previousMessages.slice(-6), // Send last 6 messages for context
+          max_tokens: 100
+        }),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error('Authentication failed - please check API key');
+        } else if (response.status === 429) {
+          throw new Error('Rate limit exceeded - please try again in a moment');
+        } else if (response.status >= 500) {
+          throw new Error('Server error - the AI service is temporarily unavailable');
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+
+      const data = await response.json();
+      return data.response || "I'm having trouble generating a response right now.";
+    } catch (error) {
+      clearTimeout(timeoutId);
+      console.error('LLM Service error:', error);
+      
+      if (error.name === 'AbortError') {
+        return "I apologize, but my response is taking longer than expected. The AI model might be warming up or experiencing high load. Please try again in a moment.";
+      }
+      
+      if (error.message.includes('fetch') || error.message.includes('network')) {
+        return "I'm having trouble connecting to my AI brain right now. Please check your internet connection and try again.";
+      }
+      
+      if (error.message.includes('Authentication failed')) {
+        return "There's a configuration issue with the AI service. Please contact the administrator.";
+      }
+      
+      if (error.message.includes('Rate limit')) {
+        return "I'm receiving too many requests right now. Please wait a moment and try again.";
+      }
+      
+      return `I encountered an error: ${error.message}. Please try asking your question again.`;
     }
-    
-    // Check for partial matches
-    if (lowerMessage.includes("hello") || lowerMessage.includes("hi")) {
-      return "Hello! I'm here to help you learn about Jeffrey. What would you like to know?";
-    }
-    
-    if (lowerMessage.includes("thank")) {
-      return "You're welcome! Feel free to ask me anything else about Jeffrey.";
-    }
-    
-    if (lowerMessage.includes("bye") || lowerMessage.includes("goodbye")) {
-      return "Goodbye! Feel free to come back anytime to learn more about Jeffrey.";
-    }
-    
-    // Default response for unrecognized questions
-    return "I'm not sure about that specific question, but I can tell you about Jeffrey's education, skills, projects, experience, or background. What would you like to know?";
   };
 
   const handleSendMessage = async () => {
-    if (!inputValue.trim()) return;
+    if (!inputValue.trim() || isTyping) return;
 
     const userMessage = inputValue.trim();
     const newUserMessage = {
@@ -91,9 +156,19 @@ const ChatbotPage = ({ isOpen, onClose }) => {
     setInputValue("");
     setIsTyping(true);
 
-    // Simulate typing delay
-    setTimeout(() => {
-      const botResponse = getBotResponse(userMessage);
+    // Start progress messages
+    const progressInterval = showProgressMessages();
+
+    try {
+      // Prepare context from previous messages
+      const previousMessages = messages.map(msg => ({
+        role: msg.type === 'user' ? 'user' : 'assistant',
+        content: msg.text
+      }));
+
+      // Call LLM service
+      const botResponse = await callLLMService(userMessage, previousMessages);
+      
       const newBotMessage = {
         id: Date.now() + 1,
         type: "bot",
@@ -102,12 +177,31 @@ const ChatbotPage = ({ isOpen, onClose }) => {
       };
       
       setMessages(prev => [...prev, newBotMessage]);
+    } catch (error) {
+      console.error('Error in handleSendMessage:', error);
+      const errorMessage = {
+        id: Date.now() + 1,
+        type: "bot",
+        text: "I'm sorry, I encountered an error while processing your message. Please try again.",
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      // Clean up progress messages
+      clearInterval(progressInterval);
+      setShowProgress(false);
       setIsTyping(false);
-    }, 1000);
+      
+      // Mark that first interaction is complete
+      if (isFirstInteraction) {
+        setIsFirstInteraction(false);
+      }
+    }
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
       handleSendMessage();
     }
   };
@@ -130,11 +224,42 @@ const ChatbotPage = ({ isOpen, onClose }) => {
           exit={{ scale: 0.8, opacity: 0, y: 50 }}
           onClick={(e) => e.stopPropagation()}
         >
+          {/* Progress Bar */}
+          <AnimatePresence>
+            {showProgress && (
+              <motion.div
+                className="progress-bar"
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <motion.div
+                  key={progressMessage}
+                  className="progress-message"
+                  initial={{ y: 30, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -30, opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <div className="progress-icon">🤖</div>
+                  <span>{progressMessage}</span>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           {/* Header */}
           <div className="chatbot-header">
             <div className="profile-section">
               <div className="profile-picture">
-                <img src="/logo.png" alt="Jeffrey Oduman" />
+                <img 
+                  src={`${process.env.PUBLIC_URL}/logo.png`} 
+                  alt="Jeffrey Oduman" 
+                  onError={(e) => {
+                    e.target.src = `${process.env.PUBLIC_URL}/funJeffrey.png`; // Fallback image
+                  }} 
+                />
               </div>
               <div className="profile-info">
                 <h2>Jeffrey Oduman</h2>
@@ -146,40 +271,48 @@ const ChatbotPage = ({ isOpen, onClose }) => {
             </button>
           </div>
 
-          {/* Messages */}
-          <div className="messages-container">
-            {messages.map((message) => (
-              <motion.div
-                key={message.id}
-                className={`message ${message.type}`}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <div className="message-content">
-                  {message.text}
-                </div>
-                <div className="message-timestamp">
-                  {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </div>
-              </motion.div>
-            ))}
-            
-            {isTyping && (
-              <motion.div
-                className="message bot typing"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-              >
-                <div className="typing-indicator">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </div>
-              </motion.div>
-            )}
-            
-            <div ref={messagesEndRef} />
+          {/* Scrollable Content Area */}
+          <div className="scrollable-content">
+            {/* Powered By Strip */}
+            <div className="powered-by-strip">
+              <span className="powered-by">Powered by Llama + Google Cloud (Experimental)</span>
+            </div>
+
+            {/* Messages */}
+            <div className="messages-container">
+              {messages.map((message) => (
+                <motion.div
+                  key={message.id}
+                  className={`message ${message.type}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <div className="message-content">
+                    {message.text}
+                  </div>
+                  <div className="message-timestamp">
+                    {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </div>
+                </motion.div>
+              ))}
+              
+              {isTyping && (
+                <motion.div
+                  className="message bot typing"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  <div className="typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                </motion.div>
+              )}
+              
+              <div ref={messagesEndRef} />
+            </div>
           </div>
 
           {/* Input */}
@@ -191,10 +324,11 @@ const ChatbotPage = ({ isOpen, onClose }) => {
               onKeyPress={handleKeyPress}
               placeholder="Ask me about Jeffrey..."
               className="message-input"
+              disabled={isTyping}
             />
             <button
               onClick={handleSendMessage}
-              disabled={!inputValue.trim()}
+              disabled={!inputValue.trim() || isTyping}
               className="send-button"
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

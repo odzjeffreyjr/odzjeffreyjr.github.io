@@ -72,40 +72,25 @@ const ExperienceCard = ({ company, role, description, duration, location, link }
   </motion.div>
 );
 
-const ExperienceCarousel = ({ experiences, isExpanded }) => {
+const ExperienceCarousel = ({ experiences }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [hasTeased, setHasTeased] = useState(false);
-  const [isTeasing, setIsTeasing] = useState(false);
-
-  // Tease effect: briefly show next card when first expanded
-  useEffect(() => {
-    if (isExpanded && !hasTeased) {
-      setIsTeasing(true);
-      const teaseTimer = setTimeout(() => {
-        setIsTeasing(false);
-        setHasTeased(true);
-      }, 800); // Show tease for 800ms
-      
-      return () => clearTimeout(teaseTimer);
-    }
-  }, [isExpanded, hasTeased]);
 
   const nextExperience = (e) => {
-    e.stopPropagation(); // Prevent event bubbling to section
+    e.stopPropagation();
     setCurrentIndex((prevIndex) => 
       prevIndex === experiences.length - 1 ? 0 : prevIndex + 1
     );
   };
 
   const prevExperience = (e) => {
-    e.stopPropagation(); // Prevent event bubbling to section
+    e.stopPropagation();
     setCurrentIndex((prevIndex) => 
       prevIndex === 0 ? experiences.length - 1 : prevIndex - 1
     );
   };
 
   const goToExperience = (index, e) => {
-    e.stopPropagation(); // Prevent event bubbling to section
+    e.stopPropagation();
     setCurrentIndex(index);
   };
 
@@ -115,8 +100,8 @@ const ExperienceCarousel = ({ experiences, isExpanded }) => {
         <div 
           className="experience-carousel-track"
           style={{ 
-            transform: `translateX(-${isTeasing ? 15 : currentIndex * 100}%)`,
-            transition: isTeasing ? 'transform 0.6s ease-out' : 'transform 0.3s ease-in-out'
+            transform: `translateX(-${currentIndex * 100}%)`,
+            transition: 'transform 0.3s ease-in-out'
           }}
         >
           {experiences.map((exp, index) => (
@@ -160,6 +145,23 @@ const SkillItem = ({ name }) => (
   </motion.div>
 );
 
+const SkillSection = ({ title, skills }) => (
+  <motion.div 
+    className="skill-section"
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: false, amount: 0.3 }}
+    transition={{ duration: 0.6 }}
+  >
+    <h3 className="skill-section-title">{title}</h3>
+    <div className="skills-grid">
+      {skills.map((skill, index) => (
+        <SkillItem key={`${title}-${index}`} name={skill} />
+      ))}
+    </div>
+  </motion.div>
+);
+
 // Helper for animated pop letters
 const PopLetters = ({ text, accentEvery = 0, className = "" }) => (
   <span className={`pop-letters ${className}`}>
@@ -177,9 +179,11 @@ const PopLetters = ({ text, accentEvery = 0, className = "" }) => (
 
 // Reverted to original smooth GIF bouncing logic
 // Refactored: use refs for animation state, only update state to trigger re-render every 40ms
+// Added scroll detection to pause animations during scrolling
 const useBouncingGifs = (count) => {
   // eslint-disable-next-line no-unused-vars
   const [_, setTick] = useState(0); // dummy state to force re-render
+  const [isScrolling, setIsScrolling] = useState(false);
   const gifsRef = useRef(
     Array.from({ length: count }).map(() => ({
       x: Math.random() * (window.innerWidth - 80),
@@ -192,19 +196,39 @@ const useBouncingGifs = (count) => {
   );
 
   useEffect(() => {
+    let scrollTimeout;
+    let isScrollingRef = { current: false };
+    
+    // Handle scroll events
+    const handleScroll = () => {
+      isScrollingRef.current = true;
+      setIsScrolling(true);
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        isScrollingRef.current = false;
+        setIsScrolling(false);
+      }, 500); // Stop scrolling state after 500ms of no scroll events
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
     let lastUpdate = Date.now();
     let frameId;
     const animate = () => {
-      const gifs = gifsRef.current;
-      for (let gif of gifs) {
-        gif.x += gif.dx;
-        gif.y += gif.dy;
-        gif.rot += gif.drot;
-        if (gif.x < 0) { gif.x = 0; gif.dx = -gif.dx; }
-        if (gif.x > window.innerWidth - 80) { gif.x = window.innerWidth - 80; gif.dx = -gif.dx; }
-        if (gif.y < 0) { gif.y = 0; gif.dy = -gif.dy; }
-        if (gif.y > window.innerHeight - 80) { gif.y = window.innerHeight - 80; gif.dy = -gif.dy; }
+      // Only animate if not scrolling
+      if (!isScrollingRef.current) {
+        const gifs = gifsRef.current;
+        for (let gif of gifs) {
+          gif.x += gif.dx;
+          gif.y += gif.dy;
+          gif.rot += gif.drot;
+          if (gif.x < 0) { gif.x = 0; gif.dx = -gif.dx; }
+          if (gif.x > window.innerWidth - 80) { gif.x = window.innerWidth - 80; gif.dx = -gif.dx; }
+          if (gif.y < 0) { gif.y = 0; gif.dy = -gif.dy; }
+          if (gif.y > window.innerHeight - 80) { gif.y = window.innerHeight - 80; gif.dy = -gif.dy; }
+        }
       }
+      
       // Only force re-render every ~40ms (25fps)
       if (Date.now() - lastUpdate > 40) {
         setTick(tick => tick + 1);
@@ -213,51 +237,24 @@ const useBouncingGifs = (count) => {
       frameId = requestAnimationFrame(animate);
     };
     frameId = requestAnimationFrame(animate);
+    
     return () => {
       if (frameId) cancelAnimationFrame(frameId);
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(scrollTimeout);
     };
-  }, []);
+  }, []); // Empty dependency array to prevent effect restart
 
   return gifsRef.current;
 };
 
 export default function Portfolio() {
-  const [expandedSections, setExpandedSections] = useState({
-    education: false,
-    experience: false,
-    skills: false
-  });
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
 
   // Section refs for scroll-to
   const skillsRef = useRef(null);
   const educationRef = useRef(null);
   const experienceRef = useRef(null);
-
-  // Debug: Log when refs are ready
-  useEffect(() => {
-    console.log('Refs initialized:', {
-      skills: skillsRef.current,
-      education: educationRef.current,
-      experience: experienceRef.current
-    });
-  }, []);
-
-  // Debug: Log when refs change
-  useEffect(() => {
-    console.log('Refs updated:', {
-      skills: skillsRef.current,
-      education: educationRef.current,
-      experience: experienceRef.current
-    });
-  });
-
-  const toggleSection = (section) => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [section]: !prev[section]
-    }));
-  };
 
   const education = [
     {
@@ -316,11 +313,24 @@ export default function Portfolio() {
     }
   ];
 
-  const skills = [
-    "Python", "Java", "JavaScript", "C++", "OCaml", "SQL", "HTML/CSS",
-    "React", "Jetpack Compose", "Pandas", "Scikit-learn", "Git", "Docker",
-    "Firebase", "WSL", "Tableau", "Arduino", "Raspberry Pi", "I2C", "UART"
-  ];
+  const skills = {
+    languages: ["Python", "Kotlin", "Java", "C++", "OCaml", "SQL", "HTML", "CSS", "JavaScript"],
+    librariesFrameworks: [
+      "Java Swing", "Node.js", "React.js", "Pandas", "Polars", "Scikit-learn", 
+      "Scikit-optimize", "PyTorch", "Matplotlib", "Plotly", "PySerial", "Alpaca-Py", 
+      "JSoup", "Jetpack Compose", "Robotics-Toolbox", "Spatial-Math"
+    ],
+    protocols: ["CAN", "UART", "I2C", "SSH"],
+    tools: [
+      "Visual Studio Code", "Android Studio", "IntelliJ", "Canva", "Git", "Tableau", 
+      "Room", "Docker", "Confluence", "Windows Subsystem for Linux (WSL)", "Ubuntu",
+      "Raspberry Pi 4 (RP4)", "Arduino", "Firebase"
+    ],
+    machineLearning: [
+      "Bert", "Finbert", "Faster-whisper", "Random Forest", "Logistic Regression", 
+      "Multiple Linear Regression", "Gradient Boost"
+    ]
+  };
 
   // GIFs: brain for skills, heart for education, penguin for experience
   const gifImages = [
@@ -330,36 +340,15 @@ export default function Portfolio() {
   ];
   const gifStates = useBouncingGifs(gifImages.length);
 
-  // Handler for GIF click: expand first, then scroll with delay
+  // Handler for GIF click: scroll to section
   const handleGifClick = (gif, idx) => {
-    console.log(`GIF clicked: ${gif.alt}, Section: ${gif.section}`);
-    console.log('GIF ref:', gif.ref);
-    console.log('GIF ref current:', gif.ref?.current);
-    console.log('experienceRef:', experienceRef);
-    console.log('experienceRef current:', experienceRef.current);
-    
-    // First expand the section
-    setExpandedSections(prev => ({ ...prev, [gif.section]: true }));
-    
-    // Then scroll to it with a small delay to allow the section to expand
-    setTimeout(() => {
-      if (gif.ref && gif.ref.current) {
-        console.log(`Scrolling to section: ${gif.section}`);
-        gif.ref.current.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'center',
-          inline: 'nearest'
-        });
-      } else {
-        console.log(`No ref found for section: ${gif.section}`);
-        console.log('Available refs:', { skillsRef, educationRef, experienceRef });
-        console.log('Their current values:', { 
-          skills: skillsRef.current, 
-          education: educationRef.current, 
-          experience: experienceRef.current 
-        });
-      }
-    }, 200);
+    if (gif.ref && gif.ref.current) {
+      gif.ref.current.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start',
+        inline: 'nearest'
+      });
+    }
   };
 
   return (
@@ -431,7 +420,7 @@ export default function Portfolio() {
           <div className="stat-label">Languages</div>
           <div className="languages-marquee">
             <div className="languages-marquee-inner">
-              {skills.slice(0, 7).join(' • ')} • {skills.slice(0, 7).join(' • ')}
+              {skills.languages.join(' • ')} • {skills.languages.join(' • ')}
             </div>
           </div>
         </Card>
@@ -444,38 +433,70 @@ export default function Portfolio() {
           <PopLetters text="3.91 / 4.00" accentEvery={3} />
         </div>
       </motion.div>
-      <Section 
-        title="Education" 
-        isExpanded={expandedSections.education}
-        onToggle={() => toggleSection('education')}
-        sectionRef={educationRef}
+      <motion.div 
+        className="education-section"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.4 }}
+        ref={educationRef}
       >
+        <motion.h2 
+          className="section-main-title"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.5 }}
+          transition={{ duration: 0.6 }}
+        >
+          Education
+        </motion.h2>
         <div className="education-grid">
           {education.map((edu, index) => (
             <EducationCard key={`edu-${index}`} {...edu} />
           ))}
         </div>
-      </Section>
-      <Section 
-        title="Experience" 
-        isExpanded={expandedSections.experience}
-        onToggle={() => toggleSection('experience')}
-        sectionRef={experienceRef}
+      </motion.div>
+      
+      <motion.div 
+        className="experience-section"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.5 }}
+        ref={experienceRef}
       >
-        <ExperienceCarousel experiences={experience} isExpanded={expandedSections.experience} />
-      </Section>
-      <Section 
-        title="Skills" 
-        isExpanded={expandedSections.skills}
-        onToggle={() => toggleSection('skills')}
-        sectionRef={skillsRef}
+        <motion.h2 
+          className="section-main-title"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.5 }}
+          transition={{ duration: 0.6 }}
+        >
+          Experience
+        </motion.h2>
+        <ExperienceCarousel experiences={experience} />
+      </motion.div>
+      <motion.div 
+        className="skills-section"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.6 }}
+        ref={skillsRef}
       >
-        <div className="skills-grid">
-          {skills.map((skill, index) => (
-            <SkillItem key={`skill-${index}`} name={skill} />
-          ))}
-        </div>
-      </Section>
+        <motion.h2 
+          className="section-main-title"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.5 }}
+          transition={{ duration: 0.6 }}
+        >
+          Skills
+        </motion.h2>
+        
+        <SkillSection title="Languages" skills={skills.languages} />
+        <SkillSection title="Libraries and Frameworks" skills={skills.librariesFrameworks} />
+        <SkillSection title="Protocols" skills={skills.protocols} />
+        <SkillSection title="Tools" skills={skills.tools} />
+        <SkillSection title="Machine Learning Models" skills={skills.machineLearning} />
+      </motion.div>
       
       {/* Floating Action Button */}
       <motion.button
@@ -487,7 +508,13 @@ export default function Portfolio() {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 1, duration: 0.5 }}
       >
-        💬
+        <img 
+          src={`${process.env.PUBLIC_URL}/logo.png`} 
+          alt="Chat with Jeffrey" 
+          onError={(e) => {
+            e.target.src = `${process.env.PUBLIC_URL}/funJeffrey.png`; // Fallback image
+          }} 
+        />
       </motion.button>
       
       {/* Chatbot Page */}
