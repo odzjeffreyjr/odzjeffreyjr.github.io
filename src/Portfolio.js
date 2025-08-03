@@ -189,6 +189,7 @@ const PopLetters = ({ text, accentEvery = 0, className = "" }) => (
 const useBouncingGifs = (count) => {
   // eslint-disable-next-line no-unused-vars
   const [_, setTick] = useState(0); // dummy state to force re-render
+  // eslint-disable-next-line no-unused-vars
   const [isScrolling, setIsScrolling] = useState(false);
   const [hoveredGifIndex, setHoveredGifIndex] = useState(null);
   const [draggedGifIndex, setDraggedGifIndex] = useState(null);
