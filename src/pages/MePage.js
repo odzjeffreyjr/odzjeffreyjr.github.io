@@ -104,31 +104,49 @@ export default function MePage() {
       >
         <div className="about-card">
           <h2 className="about-title">Who Am I?</h2>
-          <p className="about-paragraph">
-            Hello! I'm Jeffrey Oduman, a passionate Computer Science and Robotics student at the University of Pennsylvania. 
-            My journey into technology began in Uganda, where I developed a deep fascination with how computers and artificial 
-            intelligence can solve real-world problems and create meaningful impact in people's lives.
-          </p>
-          
-          <p className="about-paragraph">
-            Currently pursuing a dual degree in BSE Computer Science and MSE Robotics with a focus on AI, I'm constantly 
-            exploring the intersection of software engineering, machine learning, and robotics. My work spans from building 
-            AI-powered social media platforms to developing autonomous robotic systems, always with an eye toward innovation 
-            and practical application.
-          </p>
-          
-          <p className="about-paragraph">
-            When I'm not coding or working on research projects, you'll find me mentoring fellow students, contributing to 
-            open-source projects, or diving deep into the latest advancements in artificial intelligence and robotics. 
-            I believe in the power of technology to bridge gaps, create opportunities, and build a better future for everyone.
-          </p>
-          
-          <p className="about-paragraph">
-            My goal is to leverage my technical skills and diverse background to create solutions that not only demonstrate 
-            technical excellence but also have a positive impact on society. Whether it's through developing intelligent 
-            systems, conducting cutting-edge research, or building the next generation of autonomous technologies, I'm 
-            committed to pushing the boundaries of what's possible.
-          </p>
+          {!isFunMode ? (
+            <>
+              <p className="about-paragraph">
+                Hello! I'm Jeffrey Oduman, a passionate Computer Science and Robotics student at the University of Pennsylvania. 
+                My journey into technology began in Uganda, where I developed a deep fascination with how computers and artificial 
+                intelligence can solve real-world problems and create meaningful impact in people's lives.
+              </p>
+              
+              <p className="about-paragraph">
+                Currently pursuing a dual degree in BSE Computer Science and MSE Robotics with a focus on AI, I'm constantly 
+                exploring the intersection of software engineering, machine learning, and robotics. My work spans from building 
+                AI-powered social media platforms to developing autonomous robotic systems, always with an eye toward innovation 
+                and practical application.
+              </p>
+              
+              <p className="about-paragraph">
+                When I'm not coding or working on research projects, you'll find me mentoring fellow students, contributing to 
+                open-source projects, or diving deep into the latest advancements in artificial intelligence and robotics. 
+                I believe in the power of technology to bridge gaps, create opportunities, and build a better future for everyone.
+              </p>
+              
+              <p className="about-paragraph">
+                My goal is to leverage my technical skills and diverse background to create solutions that not only demonstrate 
+                technical excellence but also have a positive impact on society. Whether it's through developing intelligent 
+                systems, conducting cutting-edge research, or building the next generation of autonomous technologies, I'm 
+                committed to pushing the boundaries of what's possible.
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="about-paragraph">
+                I'm also a part-time football debater, and self-declared Messi missionary (praying for Ronaldo fans). When I'm not trying to convince robots to do my chores, you will find me knee-deep in arguments about why Messi is the undisputed GOAT, complete with screenshots, spreadsheets, and probably a PowerPoint presentation titled "Chapter 10: The Pass that Wiped 1 Billion USD off the French Stock Market."
+              </p>
+              
+              <p className="about-paragraph">
+                When I'm not knee-sliding in imaginary goal celebrations in my dorm room, you'll catch me hobbling through rugby practice — yes, I've still got a few years left on these legs (I think), but if I mysteriously vanish, it's because I tried to tackle someone twice my size and became a permanent part of the turf.
+              </p>
+              
+              <p className="about-paragraph">
+                I love nature walks too, mostly because trees don't argue about offside rules, and I'm passionate about writing stories that explore Africa in all its richness, complexity, and beauty. It's where my journey started, and where my inspiration lives.
+              </p>
+            </>
+          )}
         </div>
       </motion.div>
     </main>

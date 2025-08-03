@@ -55,7 +55,7 @@ const ProjectCard = ({ project, index }) => {
               Request Access
             </a>
           )}
-          {project.liveUrl && project.liveUrl !== "#" && !project.requestAccessUrl && (
+          {project.liveUrl && project.liveUrl !== "#" &&  (
             <a 
               href={project.liveUrl} 
               target="_blank" 
@@ -89,7 +89,7 @@ const ProjectsPage = () => {
       category: "finance",
       secondaryCategory: "web", // Will appear in both finance and web categories
       githubUrl: "#",
-      liveUrl: "#",
+      liveUrl: "https://drive.google.com/file/d/1ZeZWKnICL9XrwIo6pBjcjcVMbVb1Am2C/view?usp=sharing",
       requestAccessUrl: "mailto:odzjeffreyjr@gmail.com?subject=Access Request for Quantum Trading Platform&body=Hi Jeffrey,%0D%0A%0D%0AI would like to request access to the Quantum Trading Platform. Please let me know the next steps.%0D%0A%0D%0AThank you!"
     },
     {

@@ -20,17 +20,17 @@ const ChatbotPage = ({ isOpen, onClose }) => {
   
   // LLM Service configuration
   const LLM_SERVICE_URL = process.env.REACT_APP_LLM_SERVICE_URL || "https://llm-service-313722807947.us-central1.run.app";
-  const API_KEY = process.env.REACT_APP_API_KEY;
+  const REACT_APP_API_KEY = process.env.REACT_APP_API_KEY;
 
   // Validate environment variables
   useEffect(() => {
-    if (!API_KEY) {
+    if (!REACT_APP_API_KEY) {
       console.error('REACT_APP_API_KEY is not defined in environment variables');
     }
     if (!LLM_SERVICE_URL) {
       console.error('REACT_APP_LLM_SERVICE_URL is not defined in environment variables');
     }
-  }, [API_KEY, LLM_SERVICE_URL]);
+  }, [REACT_APP_API_KEY, LLM_SERVICE_URL]);
 
   // Progress messages for different stages
   const initialSetupMessages = [
@@ -80,7 +80,7 @@ const ChatbotPage = ({ isOpen, onClose }) => {
 
   // Function to make API call to LLM service
   const callLLMService = async (userMessage, previousMessages = []) => {
-    if (!API_KEY) {
+    if (!REACT_APP_API_KEY) {
       return "Configuration error: API key is missing. Please check your environment setup.";
     }
 
@@ -92,7 +92,7 @@ const ChatbotPage = ({ isOpen, onClose }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-API-Key': API_KEY
+          'X-API-Key': REACT_APP_API_KEY
         },
         body: JSON.stringify({
           message: userMessage,
