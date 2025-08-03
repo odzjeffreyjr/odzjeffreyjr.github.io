@@ -1,70 +1,217 @@
-# Getting Started with Create React App
+# Jeffrey Oduman - Portfolio Website
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+🌐 **Live Website:** [www.jeffreyoduman.tech](https://www.jeffreyoduman.tech)
+
+A modern, interactive portfolio website showcasing the work and skills of Jeffrey Oduman, a Computer Science and Robotics student at the University of Pennsylvania. Built with React and featuring stunning animations, this portfolio demonstrates expertise in AI, robotics, full-stack development, and more.
+
+## Features
+
+### **Home Page**
+- **Interactive Stats Dashboard** - Real-time stats with animated counters
+- **Floating Animations** - Dynamic GIFs and smooth transitions
+- **Skills Showcase** - Comprehensive display of technical skills
+- **Education Timeline** - Academic achievements and coursework
+- **Experience Carousel** - Professional experience with smooth navigation
+- **AI Chatbot** - Interactive chatbot powered by custom LLM service
+
+### **About Me Page**
+- **Dual Mode Toggle** - Switch between professional and fun personality modes
+- **Animated Profile Pictures** - Seamless transitions between serious and fun Jeffrey
+- **Dynamic Content** - Conditional text based on selected mode
+- **Smooth Animations** - Framer Motion powered transitions
+
+### **Projects Page**
+- **Project Filtering** - Filter by technology stack and category
+- **Interactive Cards** - Hover effects and smooth animations
+- **Live Demos** - Direct links to deployed projects
+- **GitHub Integration** - Easy access to source code
+- **Responsive Grid** - Adaptive layout for all devices
+
+### **AI Assistant**
+- **Custom LLM Integration** - Powered by custom-deployed language model
+- **Real-time Chat** - Interactive conversations about Jeffrey's background
+- **Progress Indicators** - Visual feedback during AI processing
+- **Error Handling** - Graceful fallbacks and retry mechanisms
+
+## Technology Stack
+
+### **Frontend**
+- **React 19.1.1** - Latest React with modern hooks and features
+- **React Router DOM 7.7.1** - Client-side routing
+- **Framer Motion 12.23.11** - Advanced animations and transitions
+- **CSS3** - Custom styling with modern features
+- **JavaScript ES6+** - Modern JavaScript features
+
+### **Backend Services**
+- **Custom LLM Service** - Google Cloud Run deployed AI assistant
+- **GitHub Pages** - Static site hosting
+- **Custom Domain** - Professional domain with CNAME configuration
+
+### **Development Tools**
+- **Create React App** - Development environment
+- **GitHub Pages Deployment** - Automated deployment pipeline
+- **VS Code** - Development environment
+- **Git** - Version control
+
+## Design Features
+
+### **Visual Design**
+- **Quantum-inspired Theme** - Futuristic design with blue/orange gradients
+- **Responsive Layout** - Mobile-first approach
+- **Custom Animations** - Smooth transitions and hover effects
+- **Interactive Elements** - Engaging user experience
+- **Modern Typography** - Clean, readable fonts
+
+### **User Experience**
+- **Smooth Navigation** - Seamless page transitions
+- **Loading States** - Visual feedback for better UX
+- **Accessibility** - Screen reader friendly
+- **Performance Optimized** - Fast loading times
+- **Cross-browser Compatible** - Works on all modern browsers
+
+## Project Structure
+
+```
+src/
+├── components/
+│   ├── Navigation.js          # Main navigation component
+│   └── Navigation.css         # Navigation styles
+├── pages/
+│   ├── HomePage.js            # Landing page (Portfolio.js)
+│   ├── MePage.js              # About page with dual modes
+│   ├── ProjectsPage.js        # Projects showcase
+│   └── ProjectsPage.css       # Projects page styles
+├── App.js                     # Main app component with routing
+├── App.css                    # Global styles and animations
+├── ChatbotPage.js             # AI assistant component
+├── ChatbotPage.css            # Chatbot styles
+├── Portfolio.js               # Main portfolio/home page
+└── index.js                   # Application entry point
+
+public/
+├── images/                    # Profile pictures and assets
+├── gifs/                      # Animated elements
+├── Jeffrey_Oduman_Resume.pdf  # Downloadable resume
+├── index.html                 # HTML template
+└── CNAME                      # Custom domain configuration
+```
+
+## 🚀 Getting Started
+
+### **Prerequisites**
+- Node.js (v16 or higher)
+- npm or yarn
+- Git
+
+### **Installation**
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/odzjeffreyjr/odzjeffreyjr.github.io.git
+   cd odzjeffreyjr.github.io
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables** (optional for chatbot)
+   ```bash
+   # Create .env file in root directory
+   REACT_APP_LLM_SERVICE_URL=your_llm_service_url
+   REACT_APP_API_KEY=your_api_key
+   ```
+
+4. **Start development server**
+   ```bash
+   npm start
+   ```
+
+5. **Open in browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
 
 ## Available Scripts
 
-In the project directory, you can run:
+### **Development**
+```bash
+npm start          # Run development server
+npm test           # Run test suite
+npm run build      # Build for production
+npm run eject      # Eject from Create React App
+```
 
-### `npm start`
+### **Deployment**
+```bash
+npm run predeploy  # Build the project
+npm run deploy     # Deploy to GitHub Pages
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Key Highlights
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### **Technical Achievements**
+- **Custom AI Integration** - Self-deployed LLM service on Google Cloud
+- **Advanced Animations** - Complex Framer Motion implementations
+- **Responsive Design** - Pixel-perfect across all devices
+- **Performance Optimization** - Fast loading and smooth interactions
+- **Clean Architecture** - Modular, maintainable code structure
 
-### `npm test`
+### **Featured Projects**
+- **Quantum Trading Platform** - Autonomous trading with Alpaca API
+- **Transparency Now** - Android whistleblower app with encryption
+- **NBA Game Predictor** - ML model with 0.93 AUC accuracy
+- **Wiki Olympics Scraper** - Large-scale data processing engine
+- **Java Chess Game** - Complete PvP implementation
+- **BookMatch App** - Vector Space Model recommendation system
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### **Professional Experience**
+- **JoyNet Project** - AI-powered social media platform
+- **Penn Electric Racing** - Custom data visualization library
+- **Sung Robotics Group** - 3D robotics path algorithms
+- **Teaching Assistant** - 200+ students mentored
 
-### `npm run build`
+## About Jeffrey Oduman
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+**Current:** BSE Computer Science + MSE Robotics (AI Track) at University of Pennsylvania  
+**GPA:** 3.91/4.00  
+**Focus Areas:** Artificial Intelligence, Robotics, Full-stack Development  
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### **Core Skills**
+- **Languages:** Python, Kotlin, Java, C++, OCaml, JavaScript
+- **AI/ML:** PyTorch, Scikit-learn, BERT, Computer Vision
+- **Web:** React.js, Node.js, HTML/CSS, REST APIs
+- **Mobile:** Android Development, Jetpack Compose
+- **Robotics:** ROS, Arduino, Raspberry Pi, Sensor Integration
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Deployment
 
-### `npm run eject`
+The website is automatically deployed to GitHub Pages with custom domain:
+- **Production URL:** [www.jeffreyoduman.tech](https://www.jeffreyoduman.tech)
+- **GitHub Pages:** [odzjeffreyjr.github.io](https://odzjeffreyjr.github.io)
+- **Deployment:** Automatic via GitHub Actions
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Contact
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- **Email:** [odzjeffreyjr@gmail.com](mailto:odzjeffreyjr@gmail.com)
+- **Website:** [www.jeffreyoduman.tech](https://www.jeffreyoduman.tech)
+- **GitHub:** [@odzjeffreyjr](https://github.com/odzjeffreyjr)
+- **LinkedIn:** [Jeffrey Oduman](https://linkedin.com/in/jeffrey-oduman)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Known Issues
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### **API Key Exposure**
+- **Issue:** `REACT_APP_API_KEY` may be visible in production builds as React environment variables are embedded in the client-side bundle
+- **Mitigation:** Comprehensive rate limiting and CORS policies and other security measures are implemented in the backend service
+- **Backend Protection:** See [llm-service repository](https://github.com/odzjeffreyjr/llm-service) for detailed rate limiting, request validation, and abuse prevention logic
+- **Risk Assessment:** Limited exposure risk due to backend-enforced quotas and monitoring
+- **Future Solution:** Planning migration to server-side proxy for complete API key protection
 
-## Learn More
+## License
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+This project is open source and available under the [MIT License](LICENSE).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+**Built with ❤️ by Jeffrey Oduman**  
+*Pushing the boundaries of AI, robotics, and web development*
