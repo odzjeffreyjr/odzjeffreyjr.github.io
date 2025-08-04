@@ -44,12 +44,26 @@ const ChatbotPage = ({ isOpen, onClose }) => {
       document.body.style.top = `-${scrollY}px`;
       document.body.style.width = '100%';
       
+      // Handle mobile viewport issues
+      const setMobileVH = () => {
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+      };
+      
+      setMobileVH();
+      window.addEventListener('resize', setMobileVH);
+      window.addEventListener('orientationchange', setMobileVH);
+      
       return () => {
         // Restore scrolling
         document.body.style.overflow = '';
         document.body.style.position = '';
         document.body.style.top = '';
         document.body.style.width = '';
+        
+        // Clean up mobile viewport
+        window.removeEventListener('resize', setMobileVH);
+        window.removeEventListener('orientationchange', setMobileVH);
         
         // Restore scroll position
         window.scrollTo(0, scrollY);
@@ -231,6 +245,14 @@ const ChatbotPage = ({ isOpen, onClose }) => {
     }
   };
 
+  // Handle input focus to ensure it stays visible on mobile
+  const handleInputFocus = () => {
+    // Small delay to ensure keyboard is shown
+    setTimeout(() => {
+      scrollToBottom();
+    }, 300);
+  };
+
   // Prevent scroll propagation when scrolling inside the chatbot
   const handleOverlayScroll = (e) => {
     e.stopPropagation();
@@ -364,6 +386,7 @@ const ChatbotPage = ({ isOpen, onClose }) => {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
+              onFocus={handleInputFocus}
               placeholder="Ask me about Jeffrey..."
               className="message-input"
               disabled={isTyping}

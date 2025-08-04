@@ -13,6 +13,11 @@
   padding: 1rem;
   padding-top: 5rem;
   overflow: hidden; /* Prevent scrolling on the overlay itself */
+  /* Safe area support for modern mobile devices */
+  padding-top: max(5rem, env(safe-area-inset-top));
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
 }
 
 .chatbot-container {
@@ -452,14 +457,21 @@
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .chatbot-overlay {
-    padding-top: 4.5rem;
+    padding: 0.5rem;
+    padding-top: 6rem; /* Increased to avoid nav bar */
+    padding-bottom: 1rem;
+    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100); /* Use real viewport height */
   }
   
   .chatbot-container {
-    width: 95%;
-    height: calc(90vh - 4.5rem);
-    max-height: none;
-    margin: 0 auto;
+    width: 100%;
+    height: calc(100vh - 7rem); /* Use full viewport minus nav and padding */
+    height: calc(var(--vh, 1vh) * 100 - 7rem); /* Use real viewport height */
+    max-height: calc(100vh - 7rem);
+    max-height: calc(var(--vh, 1vh) * 100 - 7rem);
+    margin: 0;
+    border-radius: 15px;
   }
   
   .progress-bar {
@@ -477,20 +489,22 @@
   }
   
   .chatbot-header {
-    padding: 1rem;
+    padding: 0.8rem 1rem;
+    min-height: 60px;
+    flex-shrink: 0;
   }
   
   .chatbot-container .profile-picture {
-    width: 40px !important;
-    height: 40px !important;
+    width: 35px !important;
+    height: 35px !important;
   }
   
   .profile-info h2 {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
   
   .profile-info p {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
   }
   
   .powered-by {
@@ -499,16 +513,36 @@
 
   .powered-by-strip {
     padding: 0.3rem 0.8rem;
+    flex-shrink: 0;
   }
 
   .messages-container {
-    padding: 1rem;
-  }  .message {
-    max-width: 90%;
+    padding: 0.8rem;
+  }
+  
+  .message {
+    max-width: 85%;
+  }
+  
+  .message-content {
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
   }
   
   .input-container {
-    padding: 1rem;
+    padding: 0.8rem;
+    min-height: 65px;
+    flex-shrink: 0;
+  }
+  
+  .message-input {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .send-button {
+    width: 42px;
+    height: 42px;
   }
   
   .fab {
@@ -526,15 +560,20 @@
 
 @media (max-width: 480px) {
   .chatbot-overlay {
-    padding: 0.5rem;
-    padding-top: 4rem;
+    padding: 0.25rem;
+    padding-top: 5.5rem; /* More space for nav bar on small screens */
+    padding-bottom: 0.5rem;
+    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100); /* Use real viewport height */
   }
   
   .chatbot-container {
     width: 100%;
-    height: calc(100vh - 4rem);
-    border-radius: 15px;
-    max-height: calc(100vh - 4rem);
+    height: calc(100vh - 6rem); /* Adjust for smaller screens */
+    height: calc(var(--vh, 1vh) * 100 - 6rem); /* Use real viewport height */
+    border-radius: 12px;
+    max-height: calc(100vh - 6rem);
+    max-height: calc(var(--vh, 1vh) * 100 - 6rem);
   }
   
   .progress-bar {
@@ -546,12 +585,60 @@
     font-size: 0.75rem;
   }
   
+  .chatbot-header {
+    padding: 0.6rem 0.8rem;
+    min-height: 55px;
+  }
+  
+  .chatbot-container .profile-picture {
+    width: 32px !important;
+    height: 32px !important;
+  }
+  
+  .profile-info h2 {
+    font-size: 0.9rem;
+  }
+  
+  .profile-info p {
+    font-size: 0.7rem;
+  }
+  
   .powered-by {
     font-size: 0.55rem;
   }
 
   .powered-by-strip {
     padding: 0.25rem 0.5rem;
+  }
+  
+  .messages-container {
+    padding: 0.6rem;
+  }
+  
+  .message-content {
+    padding: 0.7rem 0.9rem;
+    font-size: 0.85rem;
+  }
+  
+  .input-container {
+    padding: 0.6rem;
+    min-height: 60px;
+  }
+  
+  .message-input {
+    padding: 0.65rem 0.9rem;
+    font-size: 0.85rem;
+  }
+  
+  .send-button {
+    width: 38px;
+    height: 38px;
+  }
+  
+  .close-button {
+    width: 35px;
+    height: 35px;
+    font-size: 1.5rem;
   }
   
   .fab {
