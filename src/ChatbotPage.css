@@ -174,18 +174,34 @@
   cursor: pointer;
   padding: 0.5rem;
   border-radius: 50%;
-  transition: all 0.3s ease;
+  transition: all 0.15s ease; /* Faster transition for better responsiveness */
   width: 40px;
   height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  z-index: 1000; /* Ensure it's above other elements */
+  /* Improve touch responsiveness */
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  /* Larger touch target on mobile */
+  min-width: 44px;
+  min-height: 44px;
 }
 
-.close-button:hover {
+.close-button:hover,
+.close-button:focus {
   background: rgba(255, 136, 0, 0.2);
   color: #ff8800;
-  transform: scale(1.1);
+  transform: scale(1.05); /* Reduced scale for better performance */
+  outline: none;
+}
+
+.close-button:active {
+  transform: scale(0.95);
+  background: rgba(255, 136, 0, 0.3);
 }
 
 .scrollable-content {
@@ -639,6 +655,10 @@
     width: 35px;
     height: 35px;
     font-size: 1.5rem;
+    /* Enhanced mobile touch handling */
+    min-width: 48px; /* Larger touch target for mobile */
+    min-height: 48px;
+    padding: 0.3rem;
   }
   
   .fab {

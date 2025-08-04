@@ -267,6 +267,21 @@ const ChatbotPage = ({ isOpen, onClose }) => {
     }
   };
 
+  // Handle close button click with immediate response
+  const handleCloseClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onClose();
+  };
+
+  // Handle close button touch for mobile (prevents double-tap issues)
+  const handleCloseTouchStart = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Immediate response on touch start for mobile
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -330,7 +345,13 @@ const ChatbotPage = ({ isOpen, onClose }) => {
                 <p>AI + Robotics Engineer</p>
               </div>
             </div>
-            <button className="close-button" onClick={onClose}>
+            <button 
+              className="close-button" 
+              onClick={handleCloseClick}
+              onTouchStart={handleCloseTouchStart} // Separate touch handler for mobile
+              aria-label="Close chatbot"
+              type="button"
+            >
               ×
             </button>
           </div>
