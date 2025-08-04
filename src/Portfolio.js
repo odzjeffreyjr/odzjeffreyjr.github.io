@@ -297,40 +297,10 @@ const useBouncingGifs = (count) => {
     document.addEventListener('mouseup', handleMouseUp);
   };
 
-  // Touch handlers for mobile
-  const handleTouchStart = (index, e) => {
-    e.preventDefault();
-    setDraggedGifIndex(index);
-    gifsRef.current[index].isDragging = true;
-    
-    const touch = e.touches[0];
-    const startX = touch.clientX - gifsRef.current[index].x;
-    const startY = touch.clientY - gifsRef.current[index].y;
-
-    const handleTouchMove = (e) => {
-      e.preventDefault();
-      const touch = e.touches[0];
-      gifsRef.current[index].x = Math.max(0, Math.min(window.innerWidth - 80, touch.clientX - startX));
-      gifsRef.current[index].y = Math.max(0, Math.min(window.innerHeight - 80, touch.clientY - startY));
-    };
-
-    const handleTouchEnd = (e) => {
-      e.preventDefault();
-      setDraggedGifIndex(null);
-      gifsRef.current[index].isDragging = false;
-      document.removeEventListener('touchmove', handleTouchMove);
-      document.removeEventListener('touchend', handleTouchEnd);
-    };
-
-    document.addEventListener('touchmove', handleTouchMove, { passive: false });
-    document.addEventListener('touchend', handleTouchEnd);
-  };
-
   return { 
     gifs: gifsRef.current, 
     setHoveredGif: setHoveredGifIndex,
-    handleMouseDown,
-    handleTouchStart
+    handleMouseDown
   };
 };
 
@@ -442,7 +412,7 @@ export default function Portfolio() {
     { src: "/heart.gif", alt: "Neon Heart", className: "heart", section: "education", ref: educationRef, title: "Jump to Education!" },
     { src: "/coding.gif", alt: "Coding Penguin", className: "penguin", section: "experience", ref: experienceRef, title: "Jump to Experience!" }
   ];
-  const { gifs: gifStates, setHoveredGif, handleMouseDown, handleTouchStart } = useBouncingGifs(gifImages.length);
+  const { gifs: gifStates, setHoveredGif, handleMouseDown } = useBouncingGifs(gifImages.length);
 
   // Handler for GIF click: scroll to section
   const handleGifClick = (gif, idx) => {
@@ -479,7 +449,6 @@ export default function Portfolio() {
           onMouseEnter={() => setHoveredGif(i)}
           onMouseLeave={() => setHoveredGif(null)}
           onMouseDown={(e) => handleMouseDown(i, e)}
-          onTouchStart={(e) => handleTouchStart(i, e)}
           title={gif.title}
           draggable={false}
         />

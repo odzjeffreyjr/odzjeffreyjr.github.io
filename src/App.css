@@ -105,9 +105,6 @@ main.quantum-trader {
   will-change: transform, left, top;
   transition: all 0.3s ease;
   user-select: none;
-  /* Mobile touch optimization */
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .floating-gif:active {
@@ -1265,9 +1262,6 @@ body, main.quantum-trader {
   .floating-gif {
     width: 60px;
     height: 60px;
-    /* Enhanced mobile touch handling */
-    cursor: pointer; /* Better mobile cursor */
-    -webkit-touch-callout: none; /* Prevent iOS context menu */
   }
   .languages-marquee-inner {
     font-size: 0.9rem;
