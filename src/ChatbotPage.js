@@ -32,6 +32,31 @@ const ChatbotPage = ({ isOpen, onClose }) => {
     }
   }, [REACT_APP_API_KEY, LLM_SERVICE_URL]);
 
+  // Prevent body scroll when chatbot is open
+  useEffect(() => {
+    if (isOpen) {
+      // Store the current scroll position
+      const scrollY = window.scrollY;
+      
+      // Prevent scrolling on body
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      
+      return () => {
+        // Restore scrolling
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        
+        // Restore scroll position
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [isOpen]);
+
   // Progress messages for different stages
   const initialSetupMessages = [
     "Warming up container...",
@@ -206,6 +231,20 @@ const ChatbotPage = ({ isOpen, onClose }) => {
     }
   };
 
+  // Prevent scroll propagation when scrolling inside the chatbot
+  const handleOverlayScroll = (e) => {
+    e.stopPropagation();
+  };
+
+  // Prevent scroll on overlay background, allow it only in messages container
+  const handleOverlayWheel = (e) => {
+    // If the scroll is not happening inside the messages container, prevent it
+    if (!e.target.closest('.scrollable-content')) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -216,6 +255,8 @@ const ChatbotPage = ({ isOpen, onClose }) => {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
+        onWheel={handleOverlayWheel}
+        onScroll={handleOverlayScroll}
       >
         <motion.div
           className="chatbot-container"
@@ -223,6 +264,7 @@ const ChatbotPage = ({ isOpen, onClose }) => {
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.8, opacity: 0, y: 50 }}
           onClick={(e) => e.stopPropagation()}
+          onWheel={(e) => e.stopPropagation()}
         >
           {/* Progress Bar */}
           <AnimatePresence>
