@@ -20,7 +20,7 @@ const ChatbotPage = ({ isOpen, onClose }) => {
   
   // LLM Service configuration
   const LLM_SERVICE_URL = process.env.REACT_APP_LLM_SERVICE_URL || "https://llm-service-313722807947.us-central1.run.app";
-  const REACT_APP_API_KEY = process.env.REACT_APP_API_KEY;
+  const REACT_APP_API_KEY = process.env.REACT_APP_API_KEY || "9n27309GGSt3yg9c210T5t8vnvmyctYrJKFHnyg2yro8aymyt0cry35987yv9mq";
 
   // Validate environment variables
   useEffect(() => {

@@ -7,7 +7,7 @@
   background: rgba(10, 10, 10, 0.1);
   backdrop-filter: blur(20px);
   border-bottom: 2px solid rgba(63, 167, 214, 0.4);
-  z-index: 9999;
+  z-index: 100000000;
   box-shadow: 0 4px 30px rgba(63, 167, 214, 0.2);
 }
 
@@ -231,7 +231,7 @@
   border: none;
   cursor: pointer;
   padding: 0;
-  z-index: 1000000;
+  z-index: 100000002;
 }
 
 .mobile-menu-btn span {
@@ -265,10 +265,11 @@
 .mobile-menu {
   display: none;
   overflow: hidden;
-  background: rgba(26, 34, 51, 0.1);
+  background: rgba(26, 34, 51, 0.95);
   backdrop-filter: blur(20px);
   border-top: 1px solid rgba(63, 167, 214, 0.4);
-  z-index: 10000;
+  z-index: 100000001;
+  position: relative;
 }
 
 .mobile-menu::before {
@@ -290,6 +291,8 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  position: relative;
+  z-index: 100000002;
 }
 
 .mobile-nav-link {
@@ -307,7 +310,13 @@
   border: 1px solid rgba(63, 167, 214, 0.3);
   position: relative;
   overflow: hidden;
-  z-index: 1000000;
+  z-index: 100000003;
+  min-height: 44px; /* Ensure minimum touch target size */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  touch-action: manipulation; /* Improve touch responsiveness */
 }
 
 .mobile-nav-link::before {
@@ -357,7 +366,9 @@
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  z-index: 1000000;
+  z-index: 100000003;
+  cursor: pointer;
+  touch-action: manipulation; /* Improve touch responsiveness */
 }
 
 .mobile-social-icon::before {
