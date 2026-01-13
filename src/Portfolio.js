@@ -315,19 +315,36 @@ export default function Portfolio() {
   const education = [
     {
       school: "University of Pennsylvania",
-      degree: "BSE Computer Science + MSE Robotics, AI Track",
-      gpa: "GPA: 3.91 / 4.00",
+      degree: "MSE Robotics",
+      gpa: "GPA: Pending",
+      years: "2025–2028",
+      courses: [
+        "Machine Perception",
+        "Applied Machine Learning"
+      ]
+    },
+    {
+      school: "University of Pennsylvania",
+      degree: "BSE Computer Science - AI Concentration",
+      gpa: "GPA: 3.78 / 4.00",
       years: "2024–2028",
       courses: [
+        "Applied Machine Learning",
+        "Machine Perception", 
+        "Scalable and Cloud Computing", 
+        "Operating Systems Design and Implementation",
+        "Computer Organization and Design",
+        "Big Data Analytics",
+        "Linear Algebra", 
         "Discrete Mathematics",
         "Programming Languages and Techniques",
         "Multivariable Calculus",
         "Social Networks",
         "Probability",
-        "Algorithms and Data Structures",
+        "Algorithms",
+        "Data Structures",
         "Automata, Complexity, Computability",
-        "Big Data Analytics",
-        "Linear Algebra"
+        "Computer Systems"
       ]
     },
     {
@@ -358,13 +375,6 @@ export default function Portfolio() {
       }
     },
     {
-      company: "Penn Electric Racing",
-      role: "Electrical Software Engineer",
-      duration: "Sep 2024 - Present",
-      location: "Philadelphia",
-      description: "Developed PERDA, the team's custom data visualization library using matplotlib and NumPy. Implemented C++ sensor integration for aerodynamic analysis and created automated battery charging systems using PySerial and precision power supplies."
-    },
-    {
       company: "Sung Robotics Group",
       role: "Undergraduate Researcher | Research Award Recipient",
       duration: "Apr 2025 - Present",
@@ -372,11 +382,25 @@ export default function Portfolio() {
       description: "Pioneered 3D CSC Dubins Path algorithms for robotic arm kinematics using advanced robotics libraries. Developed gradient descent-based inverse kinematics solvers for optimal path planning in compliant origami robot systems."
     },
     {
+      company: "Cultural.IP",
+      role: "Software Developer Intern | Intellectual Property",
+      duration: "Sep 2025 – Oct 2025",
+      location: "Philadelphia, PA",
+      description: "Built and launched the Companion platform for startups to manage and monetize IP across web and mobile; migrated the stack from vanilla HTML/CSS/JS to modular React, developed IP Marketplace and Terms of Service Analyzer tools, led a 20+ user closed beta to refine UX and performance, and shipped well-documented code in weekly reviews with the CEO."
+    },
+    {
       company: "University of Pennsylvania",
       role: "Teaching Assistant, CIS 1200",
-      duration: "Jan 2025 - Present",
+      duration: "Jan 2025 - Dec 2025",
       location: "Philadelphia",
       description: "Mentored 200+ students in programming fundamentals, leading weekly recitations and debugging sessions for OCaml and Java. Enhanced course materials and provided personalized support to improve student comprehension and coding skills."
+    },
+    {
+      company: "Penn Electric Racing",
+      role: "Electrical Software Engineer",
+      duration: "Sep 2024 - Aug 2025",
+      location: "Philadelphia",
+      description: "Developed PERDA, the team's custom data visualization library using matplotlib and NumPy. Implemented C++ sensor integration for aerodynamic analysis and created automated battery charging systems using PySerial and precision power supplies."
     },
     {
       company: "Google Africa Developer Scholarship",
@@ -453,15 +477,6 @@ export default function Portfolio() {
           draggable={false}
         />
       ))}
-      {/* Floating Icons */}
-      <div className="floating-icons">
-        <div className="floating-icon">⚡</div>
-        <div className="floating-icon">🔬</div>
-        <div className="floating-icon">🤖</div>
-        <div className="floating-icon">💻</div>
-        <div className="floating-icon">🚀</div>
-        <div className="floating-icon">🎯</div>
-      </div>
       <motion.header 
         className="trader-header"
         initial={{ opacity: 0, y: -50 }}
@@ -506,12 +521,16 @@ export default function Portfolio() {
           </div>
         </Card>
         <div className="stat-card-pop">
+          <div className="stat-label">Status</div>
+          <PopLetters text="Incoming @ Duolingo Summer 2026" accentEvery={3} />
+        </div>
+        <div className="stat-card-pop">
           <div className="stat-label">Research Areas</div>
-          <PopLetters text="AI, Robotics" accentEvery={3} />
+          <PopLetters text="Robotics, Computational Social Science" accentEvery={3} />
         </div>
         <div className="stat-card-pop">
           <div className="stat-label">GPA</div>
-          <PopLetters text="3.91 / 4.00" accentEvery={3} />
+          <PopLetters text="3.78 / 4.00" accentEvery={3} />
         </div>
       </motion.div>
       <motion.div 

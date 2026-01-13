@@ -44,16 +44,6 @@ export default function MePage() {
       {/* Liquid Crystal Grid Background */}
       <div className="liquid-grid"></div>
       
-      {/* Floating Icons */}
-      <div className="floating-icons">
-        <div className="floating-icon">⚡</div>
-        <div className="floating-icon">🔬</div>
-        <div className="floating-icon">🤖</div>
-        <div className="floating-icon">💻</div>
-        <div className="floating-icon">🚀</div>
-        <div className="floating-icon">🎯</div>
-      </div>
-
       <motion.header 
         className="trader-header"
         initial={{ opacity: 0, y: -50 }}
