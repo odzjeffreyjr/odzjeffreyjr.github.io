@@ -88,9 +88,8 @@ const ProjectsPage = () => {
       technologies: ["Python", "Alpaca API", "Machine Learning", "Real-time Data", "Web Framework"],
       category: "finance",
       secondaryCategory: "web", // Will appear in both finance and web categories
-      githubUrl: "#",
-      liveUrl: "https://drive.google.com/file/d/1ZeZWKnICL9XrwIo6pBjcjcVMbVb1Am2C/view?usp=sharing",
-      requestAccessUrl: "mailto:odzjeffreyjr@gmail.com?subject=Access Request for Quantum Trading Platform&body=Hi Jeffrey,%0D%0A%0D%0AI would like to request access to the Quantum Trading Platform. Please let me know the next steps.%0D%0A%0D%0AThank you!"
+      githubUrl: "https://github.com/odzjeffreyjr/quant",
+      liveUrl: "#"
     },
     {
       id: 2,
